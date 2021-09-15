@@ -3,12 +3,8 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
-  - python
-  - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
   - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -25,81 +21,91 @@ meta:
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to Made In Latino API. These APIs are used to provide all the services to Made In Latino users. 
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+We have language bindings in Shell, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+This API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
 
-# Authentication
+# Users
 
-> To authorize, use this code:
+## User Login
 
-```ruby
-require 'kittn'
+This API is used to login a user into the system using the Twitter OAuth library.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
+> To authenticate a user this code:
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
+curl -d '{"access_token":"ACCESS TOKEN"}' \
+    -H "Content-Type: application/json" \
+    -X POST "http://madeinlatino.net/api/users/twitter/login/" 
 ```
 
-```javascript
-const kittn = require('kittn');
+> The above command returns JSON structured like this:
 
-let api = kittn.authorize('meowmeowmeow');
+```json
+{
+  "auth_key" : "Auth key"
+}
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+### HTTP Request
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+`POST http://madeinlatino.net/api/users/twitter/login/`
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+## Get User Profile
 
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+This API is used to access a User's profile.
 
 ```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
+curl "http://madeinlatino.net/api/users/1/"
 ```
 
-```javascript
-const kittn = require('kittn');
+> The above command returns JSON structured like this:
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+```json
+{
+  "first_name" : "First",
+  "last_name": "Last", 
+  "photo": "URL",
+  "twitter_user_name": "",
+  "twitter_user_picture": "URL",
+  "global_points": 0
+}
 ```
+
+## Update User Profile
+
+This API is used to update a User's profile.
+
+```shell
+curl -d '{"first_name": "Tim"}' -X POST  \
+    -H "Content-Type: application/json" \
+    "http://madeinlatino.net/api/users/1/"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "first_name" : "Tim",
+  "last_name": "Last", 
+  "photo": "URL",
+  "twitter_user_name": "",
+  "twitter_user_picture": "URL",
+  "global_points": 0
+}
+```
+
+
+# Artists
+
+## Get All Artists
+
+```shell
+curl "http://madeinlatino.net/api/artists/"
+```
+
 
 > The above command returns JSON structured like this:
 
@@ -107,139 +113,164 @@ let kittens = api.kittens.get();
 [
   {
     "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "name": "Artist",
+    "photo": "Photo URL",
+    "twitter_user_name": "Twitter User name",
+    "due_date": 7
   },
   {
     "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "name": "Artist",
+    "photo": "Photo URL",
+    "twitter_user_name": "Twitter User name",
+    "due_date": 9
   }
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves all artists.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET http://madeinlatino.net/api/artists`
+
+## Get a Specific Artist
+
+```shell
+curl "http://madeinlatino.net/api/artists/2" 
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": 2,
+  "name": "Artist",
+  "photo": "Photo URL",
+  "twitter_user_name": "Twitter User name",
+  "due_date": 9
+}
+```
+
+This endpoint retrieves a specific artist.
+
+### HTTP Request
+
+`GET http://madeinlatino.net/api/artists/<ID>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+ID | The ID of the artist to retrieve
+
+## Get fan rankings of an artist
+
+```shell
+curl "http://madeinlatino.net/api/artists/2/rankings/"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "rankings": [
+    {
+      "rank": 1,
+      "twitter_user_name": "Twitter user name",
+      "twitter_profile_link":"URL",
+      "points": 1000,
+      "photo": "Photo URL",
+    },
+    {
+      "rank": 2,
+      "twitter_user_name": "Twitter user name",
+      "twitter_profile_link":"URL",
+      "points": 1000,
+      "photo": "Photo URL",
+    },
+    {
+      "rank": 3,
+      "twitter_user_name": "Twitter user name",
+      "twitter_profile_link":"URL",
+      "points": 1000,
+      "photo": "Photo URL",
+    }
+  ],
+  "page":1
+}
+```
+
+This endpoint returns the paginated data of artist's fan rankings
+
+### HTTP Request
+
+`http://madeinlatino.net/api/artists/2/rankings/`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+ID | The ID of the artist
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+Parameter | Description
+--------- | -----------
+PAGE | The page number to load
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+# Actions
 
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+## Get actions
 
 ```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
+curl "http://madeinlatino.net/api/actions/"
 ```
 
-```javascript
-const kittn = require('kittn');
+> The above command returns JSON structured like this:
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+```json
+[
+  {
+    "id":1,
+    "type": "1",
+    "code": "101",
+    "points": 10,
+    "tweet_data": "Tweet Data"
+  },{
+    "id":2,
+    "type": "1",
+    "code": "150",
+    "points": 20,
+    "tweet_data": "Tweet Data"
+  },
+]
+```
+
+This endpoint retrieves all the actions that can be performed by the current user.
+
+### HTTP Request
+
+`GET http://madeinlatino.net/api/actions/`
+
+## Perform an action
+
+```shell
+curl -d '{"action_code": "101"}' \
+-H "Content-Type: application/json" \
+-X POST "http://madeinlatino.net/api/actions/"
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "message" : "Message"
 }
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+The endpoint is used to register actions done by the user.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+`POST http://madeinlatino.net/api/actions/`
