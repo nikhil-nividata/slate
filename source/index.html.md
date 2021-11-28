@@ -250,19 +250,168 @@ GET https://madeinlatino.net/users/invitation-data/?artist=Harry&invitee=Jane&in
 
 # Ranking
 
+This set of APIs is used to interact with fan rankings.
+
 ## Artist's Fan Rankings
+
+This API endpoint is used to get the fan ranking of an artist.
+
+The general URL is
+
+```
+https://madeinlatino.net/ranking/artist_id/ARTIST-ID/
+```
+
+The structure of response is
+
+```json
+{
+  "count": "Number of users in ranking",
+  "next": "URL for next page",
+  "previous": "URL for previous page",
+  "results": [
+    [
+      "User Twitter Name",
+      "Points"
+    ]
+  ]
+}
+```
+
+> Make a GET request with the user token
+
+```http request
+GET https://madeinlatino.net/ranking/artist_id/7/
+Authorization: Token <User Token>
+```
+
+> Server returns a JSON structured like this
+
+```json
+{
+  "count": 189,
+  "next": "https://madeinlatino.net/ranking/artist_id/7/?limit=100&offset=100",
+  "previous": null,
+  "results": [
+    [
+      "John",
+      20.0
+    ]
+  ]
+}
+```
 
 ## User's rank for an artist
 
-## Simulate Rank Tweets
+This API endpoint is used to get the ranking data of the logged in user corresponding to a particular user.
+
+The General url is
+
+```
+http://localhost:8000/ranking/my_rank/artist_id/ARTIST-ID/
+```
+
+> Make a GET request with the user token
+
+```http request
+GET https://madeinlatino.net/ranking/my_rank/artist_id/7/
+Authorization: Token <User Token>
+```
+
+> Server responds with JSON structured like this
+
+```json
+{
+  "rank": 1,
+  "score": 20.0
+}
+```
 
 ## User's Global Rank
 
+This API endpoint is used to get the logged in user's gloabal rank and score.
+
+> Make a GET request with the user token
+
+```http request
+GET https://madeinlatino.net/ranking/my_global_rank/
+Authorization: Token <User Token>
+```
+
+> Server responds with JSON structured like this
+
+```json
+{
+  "rank": 1,
+  "score": 680.0
+}
+```
+
 # Artist
+
+This set of API endpoints is used to interact with Artist objects.
 
 ## Artist's Fans Data
 
+This endpoint is used to get the data of Fans. We pass list of fan twitter usernames in the query params.
+> Make a GET request with the user token
+
+```http request
+GET https://madeinlatino.net/artist/fan-data/?fan=John,Jane
+Authorization: Token <User Token>
+```
+
+> Server Responds with JSON structured like this
+
+```json
+{
+  "John": {
+    "twitter_user_profile_image": "...",
+    "is_registered": true,
+    "can_invite": false
+  },
+  "Jane": {
+    "twitter_user_profile_image": "...",
+    "is_registered": false,
+    "can_invite": false
+  }
+}
+```
+
+> The `can_invite` flag denotes if the logged in user can invite a particular user
+
 ## Artist Listing
+
+This API endpoint is used to get a list of all the registered Artists in the system.
+> Make a GET request
+
+```http request
+GET https://madeinlatino.net/artist/listing/
+```
+
+> Server responds with JSON structured like this
+
+```json
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 3,
+      "name": "Harry Style",
+      "artist_profile_image": "...",
+      "twitter_user_name": "harry",
+      "remaining_days": 5,
+      "fans": 2329,
+      "due_day": 3
+    }
+  ]
+}
+```
+
+> The `count` variable refers to number of artists. `remaining_days` in an artist refers to number of days to go for the artists
+> due day and `fans` in an artist refer to total fans of the artist.
 
 # Action
 
