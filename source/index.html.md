@@ -2,275 +2,278 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
+
+- shell
 
 toc_footers:
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
+
+- <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
-  - errors
+
+- errors
 
 search: true
 
 code_clipboard: true
 
 meta:
-  - name: description
-    content: Documentation for the Kittn API
+
+- name: description content: Documentation for the Kittn API
+
 ---
 
 # Introduction
 
-Welcome to Made In Latino API. These APIs are used to provide all the services to Made In Latino users. 
+Welcome to Made In Latino API. These APIs are used to provide all the services to Made In Latino users.
 
-We have language bindings in Shell, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+We have language bindings in Shell, Python, and JavaScript! You can view code examples in the dark area to the right,
+and you can switch the programming language of the examples with the tabs in the top right.
 
-This API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+This API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use
+it as a base for your own API's documentation.
 
 # Users
 
+This set of API endpoints is used to interact with User object.
+
 ## User Login
 
-This API is used to login a user into the system using the Twitter OAuth library.
+We use twitter's OAuth to log users in. Twitter uses a 3 legged OAuth scheme to provide User Authentication. You can
+refer to Twitter's
+OAuth [here](https://developer.twitter.com/en/docs/authentication/oauth-1-0a/obtaining-user-access-tokens).
 
-> To authenticate a user this code:
+To summarise, we send a request to backend for user login, the server sends a request to Twitter using our Consumer Key
+and Secret. Twitter sends back the url to log the user in and shows the login and permissions page. Once user gives
+permission to our app twitter redirects back to our application with user tokens passed as query params. We send the
+user params back to the server where the params are stored and the token for user is generated and sent back to the
+frontend.
 
-```shell
-curl -d '{"access_token":"ACCESS TOKEN"}' \
-    -H "Content-Type: application/json" \
-    -X POST "http://madeinlatino.net/api/users/twitter/login/" 
+Steps for user login.
+
+Step 1
+> From the frontend make a get request to this url
+
+```http request
+GET https://madeinlatino.net/users/auth-url/
 ```
 
-> The above command returns JSON structured like this:
+> Server responds with JSON structured like this
 
 ```json
 {
-  "auth_key" : "Auth key"
+  "redirect_url": "<Login URL for Twitter>"
 }
 ```
 
-### HTTP Request
+Step 2
+> Redirect user to the received URL. Make sure to configure a callback URL in twitter developer settings. On the callback page, get the tokens from URL Parameters and send them back to the server
 
-`POST http://madeinlatino.net/api/users/twitter/login/`
+```http request
+POST https://madeinlatino.net/users/twitter/login/
+Content-Type: application/json
 
-## Get User Profile
-
-This API is used to access a User's profile.
-
-```shell
-curl "http://madeinlatino.net/api/users/1/"
+{
+  "access_token": "OAuth token from twitter",
+  "token_secret": "OAuth token secret"
+}
 ```
 
-> The above command returns JSON structured like this:
+> Server responds with JSON structured like this
 
 ```json
 {
-  "first_name" : "First",
-  "last_name": "Last", 
-  "photo": "URL",
-  "twitter_user_name": "",
-  "twitter_user_picture": "URL",
-  "global_points": 0
+  "key": "Token for the user"
 }
 ```
 
-## Update User Profile
+## User Logout
 
-This API is used to update a User's profile.
+This API endpoint is used to logout the user. It deletes the token associated with the user's login.
+> Make a POST request with the user token
 
-```shell
-curl -d '{"first_name": "Tim"}' -X POST  \
-    -H "Content-Type: application/json" \
-    "http://madeinlatino.net/api/users/1/"
+```http request
+POST https://madeinlatino.net/users/logout/
+Authorization: Token <User Token>
 ```
 
-> The above command returns JSON structured like this:
+> Server responds with
+
+```
+User logged out successfully
+```
+
+## User Info
+
+This API endpoint is used to get info for the logged in user.
+> Make a GET request with the use token
+
+```http request
+GET https://madeinlatino.net/users/info/
+Authorization: Token <User Token>
+```
+
+> Sever responds with json structured like this
 
 ```json
 {
-  "first_name" : "Tim",
-  "last_name": "Last", 
-  "photo": "URL",
-  "twitter_user_name": "",
-  "twitter_user_picture": "URL",
-  "global_points": 0
+  "twitter_user_name": "...",
+  "gender": "...",
+  "twitter_user_profile_image": "...",
+  "profile_image": "...",
+  "global_points": 1000.00,
+  "first_name": "...",
+  "last_name": "...",
+  "email": "user@example.com",
+  "mobile_number_prefix": 25,
+  "mobile_number": "...",
+  "date_of_birth": "1989-07-07",
+  "is_flag_action": true
 }
 ```
 
+## User Profile
 
-# Artists
+This endpoint is used to interact with user profile.
 
-## Get All Artists
+### Get User Profile
 
-```shell
-curl "http://madeinlatino.net/api/artists/"
+> Make a GET request with user token
+
+```http request
+GET https://madeinlatino.net/users/profile/
+Authorization: Token <User Token>
 ```
 
+> Server responds with JSON structured like this
 
-> The above command returns JSON structured like this:
+```json
+{
+  "first_name": "...",
+  "last_name": "...",
+  "email": "user@example.com",
+  "date_of_birth": "1989-07-07",
+  "mobile_number_prefix": 3,
+  "mobile_number": "...",
+  "is_flag_action": true
+}
+```
+
+### Update User Profile
+
+> Make a PATCH request with user token and data
+
+```http request
+PATCH https://madeinlatino.net/users/profile/
+Authorization: Token <User Token>
+Content-Type: application/json
+
+{
+  "last_name": "DOE"
+}
+```
+
+> Server responds with updated User Profile
+
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "user@example.com",
+  "date_of_birth": "1989-07-07",
+  "mobile_number_prefix": 33,
+  "mobile_number": "...",
+  "is_flag_action": true
+}
+```
+
+## Mobile Prefixes
+
+This API endpoint is used to get the Mobile Prefix data for all countries.
+> Make a GET request
+
+```http request
+GET https://madeinlatino.net/users/mobile-prefix/
+```
+
+> Server responds with JSON structured like this
 
 ```json
 [
   {
-    "id": 1,
-    "name": "Artist",
-    "photo": "Photo URL",
-    "twitter_user_name": "Twitter User name",
-    "due_date": 7
-  },
-  {
-    "id": 2,
-    "name": "Artist",
-    "photo": "Photo URL",
-    "twitter_user_name": "Twitter User name",
-    "due_date": 9
+    "pk": 1,
+    "dial_code": "+93",
+    "name": "Afghanistan"
   }
 ]
 ```
 
-This endpoint retrieves all artists.
+## Invitation Data
 
-### HTTP Request
+This API endpoint is used to get the invitation data when inviting a user. To lower the loading time, we do all the
+requests at once. The invitee, inviter and artist have their twitter usernames passed in query params.
 
-`GET http://madeinlatino.net/api/artists`
+> Make a GET request
 
-## Get a Specific Artist
-
-```shell
-curl "http://madeinlatino.net/api/artists/2" 
+```http request
+GET https://madeinlatino.net/users/invitation-data/?artist=Harry&invitee=Jane&inviter=John
 ```
 
-> The above command returns JSON structured like this:
+> Server responds with JSON structured like this
 
 ```json
+
 {
-  "id": 2,
-  "name": "Artist",
-  "photo": "Photo URL",
-  "twitter_user_name": "Twitter User name",
-  "due_date": 9
-}
-```
-
-This endpoint retrieves a specific artist.
-
-### HTTP Request
-
-`GET http://madeinlatino.net/api/artists/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the artist to retrieve
-
-## Get fan rankings of an artist
-
-```shell
-curl "http://madeinlatino.net/api/artists/2/rankings/"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "rankings": [
-    {
-      "rank": 1,
-      "twitter_user_name": "Twitter user name",
-      "twitter_profile_link":"URL",
-      "points": 1000,
-      "photo": "Photo URL",
-    },
-    {
-      "rank": 2,
-      "twitter_user_name": "Twitter user name",
-      "twitter_profile_link":"URL",
-      "points": 1000,
-      "photo": "Photo URL",
-    },
-    {
-      "rank": 3,
-      "twitter_user_name": "Twitter user name",
-      "twitter_profile_link":"URL",
-      "points": 1000,
-      "photo": "Photo URL",
-    }
-  ],
-  "page":1
-}
-```
-
-This endpoint returns the paginated data of artist's fan rankings
-
-### HTTP Request
-
-`http://madeinlatino.net/api/artists/2/rankings/`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the artist
-
-### Query Parameters
-
-Parameter | Description
---------- | -----------
-PAGE | The page number to load
-
-# Actions
-
-## Get actions
-
-```shell
-curl "http://madeinlatino.net/api/actions/"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id":1,
-    "type": "1",
-    "code": "101",
-    "points": 10,
-    "tweet_data": "Tweet Data"
-  },{
-    "id":2,
-    "type": "1",
-    "code": "150",
-    "points": 20,
-    "tweet_data": "Tweet Data"
+  "invitee": {
+    "twitter_user_name": "Jane",
+    "twitter_user_profile_image": "...",
+    "profile_image": "...",
+    "first_name": "Jane",
+    "last_name": "Doe"
   },
-]
-```
-
-This endpoint retrieves all the actions that can be performed by the current user.
-
-### HTTP Request
-
-`GET http://madeinlatino.net/api/actions/`
-
-## Perform an action
-
-```shell
-curl -d '{"action_code": "101"}' \
--H "Content-Type: application/json" \
--X POST "http://madeinlatino.net/api/actions/"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "message" : "Message"
+  "inviter": {
+    "twitter_user_name": "John",
+    "twitter_user_profile_image": "...",
+    "profile_image": "...",
+    "first_name": "John",
+    "last_name": "Doe"
+  },
+  "artist": {
+    "id": 3,
+    "twitter_user_name": "Harry",
+    "name": "Harry Style",
+    "artist_profile_image": "..."
+  },
+  "invitee_rank": 2
 }
 ```
 
-The endpoint is used to register actions done by the user.
+# Ranking
 
-### HTTP Request
+## Artist's Fan Rankings
 
-`POST http://madeinlatino.net/api/actions/`
+## User's rank for an artist
+
+## Simulate Rank Tweets
+
+## User's Global Rank
+
+# Artist
+
+## Artist's Fans Data
+
+## Artist Listing
+
+# Action
+
+## Actions
+
+## Direct Action
+
+## Webhook
+
+## Ranking Invite
+
+# Get Tweet
+
+## Get tweet by Id
