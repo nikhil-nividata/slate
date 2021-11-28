@@ -54,7 +54,7 @@ Steps for user login.
 Step 1
 > From the frontend make a get request to this url
 
-```http request
+```request 
 GET https://madeinlatino.net/users/auth-url/
 ```
 
@@ -69,7 +69,7 @@ GET https://madeinlatino.net/users/auth-url/
 Step 2
 > Redirect user to the received URL. Make sure to configure a callback URL in twitter developer settings. On the callback page, get the tokens from URL Parameters and send them back to the server
 
-```http request
+```request 
 POST https://madeinlatino.net/users/twitter/login/
 Content-Type: application/json
 
@@ -92,7 +92,7 @@ Content-Type: application/json
 This API endpoint is used to logout the user. It deletes the token associated with the user's login.
 > Make a POST request with the user token
 
-```http request
+```request 
 POST https://madeinlatino.net/users/logout/
 Authorization: Token <User Token>
 ```
@@ -108,7 +108,7 @@ User logged out successfully
 This API endpoint is used to get info for the logged in user.
 > Make a GET request with the use token
 
-```http request
+```request
 GET https://madeinlatino.net/users/info/
 Authorization: Token <User Token>
 ```
@@ -140,7 +140,7 @@ This endpoint is used to interact with user profile.
 
 > Make a GET request with user token
 
-```http request
+```request
 GET https://madeinlatino.net/users/profile/
 Authorization: Token <User Token>
 ```
@@ -163,7 +163,7 @@ Authorization: Token <User Token>
 
 > Make a PATCH request with user token and data
 
-```http request
+```request
 PATCH https://madeinlatino.net/users/profile/
 Authorization: Token <User Token>
 Content-Type: application/json
@@ -192,7 +192,7 @@ Content-Type: application/json
 This API endpoint is used to get the Mobile Prefix data for all countries.
 > Make a GET request
 
-```http request
+```request
 GET https://madeinlatino.net/users/mobile-prefix/
 ```
 
@@ -215,7 +215,7 @@ requests at once. The invitee, inviter and artist have their twitter usernames p
 
 > Make a GET request
 
-```http request
+```request
 GET https://madeinlatino.net/users/invitation-data/?artist=Harry&invitee=Jane&inviter=John
 ```
 
@@ -280,7 +280,7 @@ The structure of response is
 
 > Make a GET request with the user token
 
-```http request
+```request
 GET https://madeinlatino.net/ranking/artist_id/7/
 Authorization: Token <User Token>
 ```
@@ -313,7 +313,7 @@ http://localhost:8000/ranking/my_rank/artist_id/ARTIST-ID/
 
 > Make a GET request with the user token
 
-```http request
+```request
 GET https://madeinlatino.net/ranking/my_rank/artist_id/7/
 Authorization: Token <User Token>
 ```
@@ -333,7 +333,7 @@ This API endpoint is used to get the logged in user's gloabal rank and score.
 
 > Make a GET request with the user token
 
-```http request
+```request
 GET https://madeinlatino.net/ranking/my_global_rank/
 Authorization: Token <User Token>
 ```
@@ -356,7 +356,7 @@ This set of API endpoints is used to interact with Artist objects.
 This endpoint is used to get the data of Fans. We pass list of fan twitter usernames in the query params.
 > Make a GET request with the user token
 
-```http request
+```request
 GET https://madeinlatino.net/artist/fan-data/?fan=John,Jane
 Authorization: Token <User Token>
 ```
@@ -385,7 +385,7 @@ Authorization: Token <User Token>
 This API endpoint is used to get a list of all the registered Artists in the system.
 > Make a GET request
 
-```http request
+```request
 GET https://madeinlatino.net/artist/listing/
 ```
 
@@ -428,7 +428,7 @@ type `TWEET_150`
 
 > Make a GET request with the user token. Artist id is passed as a query param
 
-```http request
+```request
 GET https://madeinlatino.net/action/?artist=3
 Authorization: Token <User Token>
 ```
@@ -466,7 +466,8 @@ You can perform actions for a user by posting to this endpoint.
 
 > Make a POST request with the user token and following data.
 
-```http request
+```http
+
 POST https://madeinlatino.net/action/
 Authorization: Token <User Token>
 Content-Type: application/json
@@ -476,6 +477,7 @@ Content-Type: application/json
   "recommend_id":46,
   "artist_id":3
 }
+
 ```
 
 > `action_id` refers to the type of action being performed. It can be get from `action.id` property of the data from the GET request <br>
@@ -496,7 +498,7 @@ This endpoint allows us to get the direct actions that can be performed by the u
 
 > Make a GET request with the user token
 
-```http request
+```request
 GET https://madeinlatino.net/action/direct-action/
 Authorization: Token <User Token>
 ```
@@ -538,7 +540,7 @@ API endpoint to invite users from Rankings Page.
 
 > Make a POST request with the user token and the following data
 
-```http request
+```request
 POST https://madeinlatino.net/action/ranking-invite/
 Authorization: Token <User Token>
 Content-Type: application/json
@@ -568,7 +570,7 @@ https://madeinlatino.net/get_tweet/TWEET-ID/
 
 
 > Make a GET request
-```http request
+```request
 GET https://madeinlatino.net/get_tweet/1461393548872458250/
 Cookie: sessionid=<Session Cookie>;
 ```
