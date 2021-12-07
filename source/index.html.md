@@ -27,7 +27,7 @@ meta:
 
 Welcome to Made In Latino API. These APIs are used to provide all the services to Made In Latino users.
 
-We have language bindings in Shell, Python, and JavaScript! You can view code examples in the dark area to the right,
+We have language binding in HTTP Requests! You can view code examples in the dark area to the right,
 and you can switch the programming language of the examples with the tabs in the top right.
 
 This API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use
@@ -49,10 +49,11 @@ permission to our app twitter redirects back to our application with user tokens
 user params back to the server where the params are stored and the token for user is generated and sent back to the
 frontend.
 
-Steps for user login.
+### Steps for user login.
 
-Step 1
-> From the frontend make a get request to this url
+#### Step 1
+
+> Example Request
 
 ```request 
 GET https://madeinlatino.net/users/auth-url/
@@ -66,16 +67,39 @@ GET https://madeinlatino.net/users/auth-url/
 }
 ```
 
-Step 2
-> Redirect user to the received URL. Make sure to configure a callback URL in twitter developer settings. On the callback page, get the tokens from URL Parameters and send them back to the server
+Get the redirect URL from backend.
+From the frontend make a get request to this url
+
+`GET https://madeinlatino.net/users/auth-url/`
+
+
+
+#### Step 2
+
+Redirect user to the received URL. Make sure to configure a callback URL in twitter developer settings. On the callback page, get the tokens from URL Parameters and send them back to the server
+
+
+HTTP Request
+
+`POST https://madeinlatino.net/users/twitter/login/`
+
+Request Body
+
+|Parameter|Type|Required|Description|
+|---------|----|--------|-----------|
+|access_token|string|Required|User Twitter OAuth Token|
+|token_secret|string|Required|User Twitter Token Secret|
+
+
+> Example Request
 
 ```request 
 POST https://madeinlatino.net/users/twitter/login/
 Content-Type: application/json
 
 {
-  "access_token": "OAuth token from twitter",
-  "token_secret": "OAuth token secret"
+  "access_token": "...",
+  "token_secret": "..."
 }
 ```
 
@@ -90,7 +114,11 @@ Content-Type: application/json
 ## User Logout
 
 This API endpoint is used to logout the user. It deletes the token associated with the user's login.
-> Make a POST request with the user token
+
+HTTP Request
+`POST https://madeinlatino.net/users/logout/`
+
+> Example Request
 
 ```request 
 POST https://madeinlatino.net/users/logout/
@@ -106,7 +134,12 @@ User logged out successfully
 ## User Info
 
 This API endpoint is used to get info for the logged in user.
-> Make a GET request with the use token
+
+HTTP Request
+
+`GET https://madeinlatino.net/users/info/`
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/users/info/
@@ -138,7 +171,11 @@ This endpoint is used to interact with user profile.
 
 ### Get User Profile
 
-> Make a GET request with user token
+Make a GET request to the endpoint.
+
+`GET https://madeinlatino.net/users/profile/`
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/users/profile/
@@ -161,7 +198,25 @@ Authorization: Token <User Token>
 
 ### Update User Profile
 
-> Make a PATCH request with user token and data
+Make a PATCH request to the endpoint.
+
+Redirect from frontend to the above URL.
+
+`PATCH https://madeinlatino.net/users/profile/`
+
+Request Body
+
+|Parameter|Type|Required|Description|
+|---------|----|--------|-----------|
+|first_name|string|Optional|User first name|
+|last_name|string|Optional|User last name|
+|email|string|Optional|User email|
+|date_of_birth|string|Optional|User date of birth|
+|mobile_number_prefix|number|Optional|Id of mobile number prefix object|
+|mobile_number|string|Optional|User mobile number|
+|is_flag_action|boolean|Optional|User's consent to flag action|
+
+> Example Request
 
 ```request
 PATCH https://madeinlatino.net/users/profile/
@@ -190,7 +245,12 @@ Content-Type: application/json
 ## Mobile Prefixes
 
 This API endpoint is used to get the Mobile Prefix data for all countries.
-> Make a GET request
+
+Request
+
+`GET https://madeinlatino.net/users/mobile-prefix/`
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/users/mobile-prefix/
@@ -213,7 +273,19 @@ GET https://madeinlatino.net/users/mobile-prefix/
 This API endpoint is used to get the invitation data when inviting a user. To lower the loading time, we do all the
 requests at once. The invitee, inviter and artist have their twitter usernames passed in query params.
 
-> Make a GET request
+Request
+
+`GET https://madeinlatino.net/users/invitation-data/`
+
+Request Parameters
+
+|Parameter|Type|Required|Description|
+|---------|----|--------|-----------|
+|artist|string|Required|Artist's Twitter Username|
+|invitee|string|Required|Invitee's Twitter Username|
+|inviter|string|Required|Inviter's Twitter Username|
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/users/invitation-data/?artist=Harry&invitee=Jane&inviter=John
@@ -258,27 +330,19 @@ This API endpoint is used to get the fan ranking of an artist.
 
 The general URL is
 
-```
-https://madeinlatino.net/ranking/artist_id/ARTIST-ID/
-```
+`https://madeinlatino.net/ranking/artist_id/ARTIST-ID/`
 
 The structure of response is
 
-```json
-{
-  "count": "Number of users in ranking",
-  "next": "URL for next page",
-  "previous": "URL for previous page",
-  "results": [
-    [
-      "User Twitter Name",
-      "Points"
-    ]
-  ]
-}
-```
+|Parameter|Type|Description|
+|---------|----|-----------|
+|count|number|Number of users in ranking|
+|next|url|URL for next page of ranking|
+|previous|url|URL for previous page|
+|results|array|Array of [Username, Points] objects in ranking|
 
-> Make a GET request with the user token
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/ranking/artist_id/7/
@@ -307,11 +371,9 @@ This API endpoint is used to get the ranking data of the logged in user correspo
 
 The General url is
 
-```
-http://localhost:8000/ranking/my_rank/artist_id/ARTIST-ID/
-```
+`https://madeinlatino.net/ranking/my_rank/artist_id/:artist-id/`
 
-> Make a GET request with the user token
+> Example Request
 
 ```request
 GET https://madeinlatino.net/ranking/my_rank/artist_id/7/
@@ -331,7 +393,11 @@ Authorization: Token <User Token>
 
 This API endpoint is used to get the logged in user's gloabal rank and score.
 
-> Make a GET request with the user token
+Request
+
+`GET https://madeinlatino.net/ranking/my_global_rank/`
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/ranking/my_global_rank/
@@ -354,7 +420,18 @@ This set of API endpoints is used to interact with Artist objects.
 ## Artist's Fans Data
 
 This endpoint is used to get the data of Fans. We pass list of fan twitter usernames in the query params.
-> Make a GET request with the user token
+
+Request
+
+`GET https://madeinlatino.net/artist/fan-data/`
+
+Request Params
+
+|Parameter|Type|Description|
+|---------|----|-----------|
+|fan|string|Values of User Twitter Names whose data is needed|
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/artist/fan-data/?fan=John,Jane
@@ -383,7 +460,12 @@ Authorization: Token <User Token>
 ## Artist Listing
 
 This API endpoint is used to get a list of all the registered Artists in the system.
-> Make a GET request
+
+Request
+
+`GET https://madeinlatino.net/artist/listing/`
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/artist/listing/
@@ -426,6 +508,19 @@ type `TWEET_150`
 
 ### Get recommendations for a user.
 
+Make a get request to the endpoint.
+
+Request
+
+`GET https://madeinlatino.net/action/`
+
+Request Params
+
+|Parameter|Type|Description|
+|---------|----|-----------|
+|artist|number|Artist id|
+
+
 > Make a GET request with the user token. Artist id is passed as a query param
 
 ```request
@@ -464,7 +559,20 @@ Authorization: Token <User Token>
 
 You can perform actions for a user by posting to this endpoint.
 
-> Make a POST request with the user token and following data.
+Request
+
+`POST https://madeinlatino.net/action/`
+
+Request Body
+
+|Parameter|Type|Required|Description|
+|---------|----|--------|-----------|
+|action_id|number|Required|Id of action to be performed|
+|recommend_id|number|Required|Id of recommendation to be performed|
+|artist_id|number|Required|Id of artist for which action is to be performed|
+
+
+> Example Request
 
 ```http
 
@@ -496,7 +604,11 @@ Content-Type: application/json
 
 This endpoint allows us to get the direct actions that can be performed by the user.
 
-> Make a GET request with the user token
+Request
+
+`GET https://madeinlatino.net/action/direct-action/`
+
+> Example Request
 
 ```request
 GET https://madeinlatino.net/action/direct-action/
@@ -530,15 +642,24 @@ Authorization: Token <User Token>
 
 To perform this action, use the normal POST method for performing actions.
 
-[comment]: <> (## Webhook)
 
-[comment]: <> (Maybe this isnt part of API )
 
 ## Ranking Invite
 
 API endpoint to invite users from Rankings Page.
 
-> Make a POST request with the user token and the following data
+Request
+
+`POST https://madeinlatino.net/action/ranking-invite/`
+
+Request Body
+
+|Parameter|Type|Required|Description|
+|---------|----|--------|-----------|
+|artist|number|Required|Ranking Artist's ID|
+|user|string|Required|Username of user to be invited|
+
+> Example Request
 
 ```request
 POST https://madeinlatino.net/action/ranking-invite/
@@ -562,19 +683,20 @@ API Endpoint that gets the tweet from twitter.
 ## Get tweet by Id
 
 This endpoint works only when called as an admin user. This endpoint uses session based authentication
-> Generic form
-```
-https://madeinlatino.net/get_tweet/TWEET-ID/
-```
-> `TWEET-ID` is the ID of a tweet that can be obtained from Twitter.
+Request
+
+`https://madeinlatino.net/get_tweet/:tweet-id/`
 
 
-> Make a GET request
+> Example Request
+
 ```request
 GET https://madeinlatino.net/get_tweet/1461393548872458250/
 Cookie: sessionid=<Session Cookie>;
 ```
+
 > Server responds with JSON structured like this
+
 ```json
 {
   "text": "Today @thewavexr 6pm PT / 9pm ET #BieberWave Join me here: https://t.co/8KNStRidql https://t.co/yj5ULPrV7R"
