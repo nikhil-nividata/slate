@@ -27,8 +27,8 @@ meta:
 
 Welcome to Made In Latino API. These APIs are used to provide all the services to Made In Latino users.
 
-We have language binding in HTTP Requests! You can view code examples in the dark area to the right,
-and you can switch the programming language of the examples with the tabs in the top right.
+We have language binding in HTTP Requests! You can view code examples in the dark area to the right, and you can switch
+the programming language of the examples with the tabs in the top right.
 
 This API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use
 it as a base for your own API's documentation.
@@ -67,17 +67,14 @@ GET https://madeinlatino.net/users/auth-url/
 }
 ```
 
-Get the redirect URL from backend.
-From the frontend make a get request to this url
+Get the redirect URL from backend. From the frontend make a get request to this url
 
 `GET https://madeinlatino.net/users/auth-url/`
 
-
-
 #### Step 2
 
-Redirect user to the received URL. Make sure to configure a callback URL in twitter developer settings. On the callback page, get the tokens from URL Parameters and send them back to the server
-
+Redirect user to the received URL. Make sure to configure a callback URL in twitter developer settings. On the callback
+page, get the tokens from URL Parameters and send them back to the server
 
 HTTP Request
 
@@ -89,7 +86,6 @@ Request Body
 |---------|----|--------|-----------|
 |access_token|string|Required|User Twitter OAuth Token|
 |token_secret|string|Required|User Twitter Token Secret|
-
 
 > Example Request
 
@@ -320,6 +316,18 @@ GET https://madeinlatino.net/users/invitation-data/?artist=Harry&invitee=Jane&in
 }
 ```
 
+## Delete Account
+
+This API endpoint is used delete account of user. Request
+
+`DELETE https://madeinlatino.net/users/delete-my-account/user_id/`
+
+> Example Request
+
+```request
+DELETE https://madeinlatino.net/users/delete-my-account/10/
+```
+
 # Ranking
 
 This set of APIs is used to interact with fan rankings.
@@ -340,7 +348,6 @@ The structure of response is
 |next|url|URL for next page of ranking|
 |previous|url|URL for previous page|
 |results|array|Array of [Username, Points] objects in ranking|
-
 
 > Example Request
 
@@ -411,6 +418,27 @@ Authorization: Token <User Token>
   "rank": 1,
   "score": 680.0
 }
+```
+
+## Download registered Users
+
+This API endpoint is used to get the Registered users.
+
+Request
+
+`GET https://madeinlatino.net/ranking/download-users/`
+
+> Example Request
+
+```request
+GET https://madeinlatino.net/ranking/download-users/
+Authorization: Token <User Token>
+```
+
+> Server responds with JSON structured like this
+
+```file
+csv file
 ```
 
 # Artist
@@ -520,7 +548,6 @@ Request Params
 |---------|----|-----------|
 |artist|number|Artist id|
 
-
 > Make a GET request with the user token. Artist id is passed as a query param
 
 ```request
@@ -570,7 +597,6 @@ Request Body
 |action_id|number|Required|Id of action to be performed|
 |recommend_id|number|Required|Id of recommendation to be performed|
 |artist_id|number|Required|Id of artist for which action is to be performed|
-
 
 > Example Request
 
@@ -642,8 +668,6 @@ Authorization: Token <User Token>
 
 To perform this action, use the normal POST method for performing actions.
 
-
-
 ## Ranking Invite
 
 API endpoint to invite users from Rankings Page.
@@ -674,7 +698,71 @@ Content-Type: application/json
 
 > `artist` param takes the artist id. `user` param takes the twitter username of the user to invite.
 
-> Server responds with JSON status 200
+## follow
+
+API endpoint to Follow user.
+
+Request
+
+`POST https://madeinlatino.net/action/follow/`
+
+Request Body
+
+|Parameter|Type|Required|Description|
+|---------|----|--------|-----------|
+|is_user|boolean|Required|some time it will ne artist or users|
+|points|integer|Required|points of the action|
+|user|json|Required|user data|
+
+> Example Request
+
+```request
+POST https://madeinlatino.net/action/follow/
+Authorization: Token <User Token>
+Content-Type: application/json
+
+```
+> `is_user` param takes the boolean value. `user` param takes the user data. `points` param takes the point of action
+
+```json
+{
+  "message": "success",
+  "old_point": 20,
+  "point": 60,
+  "rank": 3
+}
+```
+
+
+## follow Users
+
+GET API endpoint to list of users for follow.
+
+Request
+
+`GET https://madeinlatino.net/action/follow-users/`
+
+
+> Example Request
+
+```request
+GET https://madeinlatino.net/action/follow-users/
+Authorization: Token <User Token>
+Content-Type: application/json
+```
+
+> Server responds with JSON structured like this
+
+```json
+{
+  "is_user": true,
+  "points": 40,
+  "user": {
+    "id": 693,
+    "twitter_user_name":"abc"
+  }
+}
+```
 
 # Get Tweet
 
@@ -682,8 +770,7 @@ API Endpoint that gets the tweet from twitter.
 
 ## Get tweet by Id
 
-This endpoint works only when called as an admin user. This endpoint uses session based authentication
-Request
+This endpoint works only when called as an admin user. This endpoint uses session based authentication Request
 
 `https://madeinlatino.net/get_tweet/:tweet-id/`
 
