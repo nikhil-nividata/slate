@@ -441,6 +441,56 @@ Authorization: Token <User Token>
 csv file
 ```
 
+# Rewards
+
+This set of APIs is used to create and listing of rewards.
+
+## Reward listing
+
+This API endpoint is used to get the rewards of an artist.
+
+The general URL is
+
+`https://madeinlatino.net/reward/rewards/ARTIST-ID/`
+
+The structure of response is
+
+|Parameter|Type|Description|
+|---------|----|-----------|
+|count|number|Number of rewards|
+|next|url|URL for next page of rewards|
+|previous|url|URL for previous page|
+|results|array|Array of [title, image, description] objects in rewards|
+
+> Example Request
+
+```request
+GET https://madeinlatino.net/reward/rewards/7/
+Authorization: Token <User Token>
+```
+
+> Server returns a JSON structured like this
+
+```json
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "title": "Reward 2",
+            "image": null,
+            "description": "description of Reward 2"
+        },
+        {
+            "title": "Reward1",
+            "image": null,
+            "description": "Reward1"
+        }
+    ]
+}
+```
+
 # Artist
 
 This set of API endpoints is used to interact with Artist objects.
